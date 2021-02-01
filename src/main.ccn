@@ -1,0 +1,128 @@
+start phase EntryPoint {
+    info = "Denotes the entry point of your compiler",
+    
+    actions {
+        pass SPdoScanParse;
+        Demo;
+        Print;
+    }
+};
+
+traversal Print {
+    uid = PRT
+};
+
+phase Demo {
+    actions { 
+        traversal RenameIdentifiers {
+            uid = RI,
+            nodes = { Var, VarLet }
+        };
+
+        traversal SumInts {
+            uid = SI,
+            nodes = { Stmts, Num },
+            travdata {
+                int sum
+            }
+        };
+
+        traversal OptSubstraction {
+            uid = OS,
+            nodes = { Binop }
+        };
+    }
+};
+
+
+/*** AST ***/
+
+enum monop_type {
+    prefix = MO,
+    values {
+        not, neg
+    }
+};
+
+enum binop_type {
+    prefix = BO,
+    values {
+        add, sub, mul, div, mod, lt, le, gt, ge, eq, ne,
+        and, or
+    }
+};
+
+nodeset Expr = {Num, Float, Bool, Binop, Var};
+nodeset Stmt = {Assign};
+
+// Nodes you want to be able to link to from your symbol table.
+nodeset Link = Expr | Stmt;
+
+root node Stmts {
+    children {
+        Stmt stmt { constructor, mandatory },
+        Stmts next { constructor }
+    }
+};
+
+node Assign {
+    children {
+        VarLet let { constructor },
+        Expr expr { constructor, mandatory }
+    }
+};
+
+node Binop {
+    children {
+        Expr left  { constructor, mandatory },
+        Expr right { constructor, mandatory }
+    },
+    
+    attributes {
+        binop_type type { constructor }
+    }
+};
+
+// Variable in assignment.
+node VarLet {
+    attributes {
+        string name { constructor },
+        Link decl
+    }
+};
+
+// Variable in an expression.
+node Var {
+    attributes {
+        string name { constructor },
+        Link decl
+    }
+};
+
+node Num {
+    attributes {
+        int val { constructor }
+    }
+};
+
+node Float {
+    attributes {
+        float val { constructor }
+    }
+};
+
+node Bool {
+    attributes {
+        bool val { constructor }
+    }
+};
+
+/* Symbol table entry
+ * TODO: fill in.
+node Ste {
+
+}
+*/
+
+
+
