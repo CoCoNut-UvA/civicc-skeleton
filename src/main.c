@@ -14,13 +14,14 @@ static char doc[] =
   "civicc -- Programming C, the civilised way.";
 
 /* A description of the arguments we accept. */
-static char args_doc[] = "FILE";
+static char args_doc[] = "<civic file>";
 
 
 static struct argp_option options[] = {
   {"verbose",    'v', "INT",      0,  "Produce verbose output", 0},
   {"output",     'o', "FILE", 0,  "Output to file instead of STDOUT", 0},
-  {"breakpoint", 'b', "STRING", 0, "Break at the action in your compiler given by the breakstring(<phase>.<action>)", 0},
+  {"breakpoint", 'b', "BREAK", 0, "Break at the action in your compiler given by the breakstring(<phase>.<action>) or the id seen in the structure", 0},
+  {"structure", 's', NULL, 0, "Show the structure of the compiler.", 0},
   { 0 }
 };
 
@@ -43,7 +44,14 @@ parse_opt (int key, char *arg, struct argp_state *state)
       break;
 
     case 'b':
-      CCNsetBreakpoint(arg);
+      if (arg != NULL && isdigit(arg[0])) {
+          CCNsetBreakpointWithID((int)strtol(arg, NULL, 10));
+      } else {
+          CCNsetBreakpoint(arg);
+      }
+      break;
+    case 's':
+      CCNshowTree();
       break;
     case ARGP_KEY_ARG:
         if (state->arg_num >= 2) {
@@ -78,7 +86,6 @@ void BreakpointHandler(node_st *root)
 int main (int argc, char **argv)
 {
     GLBinitializeGlobals();
-    CCNsetVerbosity(PD_V_HIGH);
     argp_parse (&argp, argc, argv, 0, 0, &global);
 
     CCNrun(NULL);
