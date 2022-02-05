@@ -15,7 +15,9 @@
 static node_st *parseresult = NULL;
 extern int yylex();
 static int yyerror( char *errname);
+extern FILE *yyin;
 void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
+
 
 %}
 
@@ -23,7 +25,7 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
  char               *id;
  int                 cint;
  float               cflt;
- enum binop_type     cbinop; 
+ enum binop_type     cbinop;
  node_st             *node;
 }
 
@@ -45,7 +47,7 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 
 %%
 
-program: stmts 
+program: stmts
          {
            parseresult = $1;
          }
@@ -145,7 +147,7 @@ binop: PLUS      { $$ = BO_add; }
      | OR        { $$ = BO_or; }
      | AND       { $$ = BO_and; }
      ;
-      
+
 %%
 
 void AddLocToNode(node_st *node, void *begin_loc, void *end_loc)
@@ -161,13 +163,12 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc)
 
 static int yyerror( char *error)
 {
-  CTI(CTI_ERROR, true, "line %d, col %d\nError parsing source code: %s\n", 
+  CTI(CTI_ERROR, true, "line %d, col %d\nError parsing source code: %s\n",
             global.line, global.col, error);
   CTIabortOnError();
   return( 0);
 }
 
-FILE *yyin;
 node_st *SPdoScanParse(node_st *root)
 {
     DBUG_ASSERT(root == NULL, "Started parsing with existing syntax tree.");
