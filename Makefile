@@ -20,4 +20,4 @@ dist:
 
 clean:
 	rm -f *.tar*
-	rm -rf build*
+	rm -rf build*/
