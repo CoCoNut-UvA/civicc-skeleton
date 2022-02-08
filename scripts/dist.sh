@@ -16,6 +16,7 @@ echo "Archiving civicc..."
 git archive --prefix="civicc/" -o civicc.tar HEAD . || exit 1
 echo "Combining..."
 tar --concatenate --file=civicc.tar coconut/coconut.tar || exit 1
+rm coconut/coconut.tar
 echo "Compressing..."
 gzip -9 civicc.tar
 echo "----- Finished ------"
