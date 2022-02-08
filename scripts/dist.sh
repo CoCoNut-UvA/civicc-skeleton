@@ -1,5 +1,12 @@
 #!/usr/bin/env bash
 
+if ! [[ -z $(git status --porcelain) ]]; then
+    echo "git status is not clean. Ensure it is before making an archive."
+    echo "---------------------------------------------------------------"
+    git status
+    exit 1
+fi
+
 echo "----- Creating archive of your source ----"
 cd coconut/
 echo "Archiving CoCoNut..."
