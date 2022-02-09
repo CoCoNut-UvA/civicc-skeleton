@@ -14,6 +14,9 @@ make -C build-debug
 ```
 to build your compiler.
 
+**IMPORTANT**: After cloning, you should change the remote to point to a **private** repo you control.
+You can **not** achieve this via forking, because GitHub does not allow changing the visibility of a forked repo.
+
 # Creating an archive
 You can quickly create an archive for submitting to canvas as follows
 ```
