@@ -17,10 +17,6 @@ add_test(NAME "arrays" COMMAND "${TEST_COMMAND}/run.bash" "${COMPILER}" arrays W
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
 
-if (OSX)
-    find_package(Argp REQUIRED)
-endif (OSX)
-
 bison_target(CivicParser src/scanparse/parser.y "${CMAKE_CURRENT_BINARY_DIR}/parser.c"
     DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/parser.h" VERBOSE)
 
@@ -43,11 +39,6 @@ add_executable(civicc ${FLEX_CivicLexer_OUTPUTS} ${BISON_CivicParser_OUTPUTS}
 target_compile_options(civicc PRIVATE
         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Wno-unused-function>
 )
-
-if (OSX)
-    target_include_directories(civicc PUBLIC "${ARGP_INCLUDE_DIR}")
-    target_link_libraries(civicc PRIVATE "${ARGP_LIBRARIES}")
-endif (OSX)
 
 coconut_target_generate(civicc "${CMAKE_CURRENT_LIST_DIR}/src/main.ccn" dynamic)
 target_include_directories(civicc 

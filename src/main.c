@@ -1,80 +1,85 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <argp.h>
+#include <getopt.h>
+#include <ctype.h>
+#include <string.h>
 
 #include "global/globals.h"
 #include "palm/str.h"
 #include "ccn/ccn.h"
 
-// Uses argp: https://www.gnu.org/software/libc/manual/html_node/Argp.html
+static
+void Usage(char *program) {
+    char *program_bin = strrchr(program, '/');
+    if (program_bin)
+        program = program_bin + 1;
 
-/* Program documentation. */
-static char doc[] =
-  "civicc -- Programming C, the civilised way.";
+    printf("Usage: %s [OPTION...] <civic file>\n", program);
+    printf("Options:\n");
+    printf("  -h                           This help message.\n");
+    printf("  --output/-o <output_file>    Output assembly to output file instead of STDOUT.\n");
+    printf("  --verbose/-v                 Enable verbose mode.\n");
+    printf("  --breakpoint/-b <breakpoint> Set a breakpoint.\n");
+    printf("  --structure/-s               Pretty print the structure of the compiler.\n");
+}
 
-/* A description of the arguments we accept. */
-static char args_doc[] = "<civic file>";
 
 
-static struct argp_option options[] = {
-  {"verbose",    'v', "INT",      0,  "Produce verbose output", 0},
-  {"output",     'o', "FILE", 0,  "Output to file instead of STDOUT", 0},
-  {"breakpoint", 'b', "BREAK", 0, "Break at the action in your compiler given by the breakstring(<phase>.<action>) or the id seen in the structure", 0},
-  {"structure", 's', NULL, 0, "Show the structure of the compiler.", 0},
-  { 0 }
-};
-
-/* Parse a single option. */
-static error_t
-parse_opt (int key, char *arg, struct argp_state *state)
+/* Parse command lines. Usages the globals struct to store data. */
+static int ProcessArgs(int argc, char *argv[])
 {
-  /* Get the input argument from argp_parse, which we
-     know is a pointer to our arguments structure. */
-  struct globals *globals = state->input;
+  static struct option long_options[] = {
+        {"verbose", no_argument, 0, 'v'},
+        {"output",  required_argument, 0, 'o'},
+        {"breakpoint", required_argument, 0, 'b'},
+        {"structure", no_argument, 0, 's'},
+        {0, 0, 0, 0}};
 
-    switch (key)
-    {
-    case 'v':
-      globals->verbose = (int)strtol(arg, NULL, 10);
-      CCNsetVerbosity(globals->verbose);
-      break;
-    case 'o':
-      globals->output_file = arg;
-      break;
+  int option_index;
+  int c;
 
-    case 'b':
-      if (arg != NULL && isdigit(arg[0])) {
-          CCNsetBreakpointWithID((int)strtol(arg, NULL, 10));
-      } else {
-          CCNsetBreakpoint(arg);
-      }
-      break;
-    case 's':
-      CCNshowTree();
-      break;
-    case ARGP_KEY_ARG:
-        if (state->arg_num >= 2) {
-            /* Too many arguments. */
-            argp_usage (state);
-        }
-        globals->input_file = arg; 
+  while (1) {
+      c = getopt_long(argc, argv, "hsvo:b:", long_options, &option_index);
+
+      // End of options
+      if (c == -1)
+          break;
+
+      switch (c) {
+      case 'v':
+        global.verbose = 1;
+        CCNsetVerbosity(PD_V_MEDIUM);
         break;
-
-    case ARGP_KEY_END:
-      if (state->arg_num < 1)
-        /* Not enough arguments. */
-        argp_usage (state);
-      break;
-
-    default:
-      return ARGP_ERR_UNKNOWN;
+      case 'b':
+        if (optarg != NULL && isdigit(optarg[0])) {
+          CCNsetBreakpointWithID((int)strtol(optarg, NULL, 10));
+        } else {
+            CCNsetBreakpoint(optarg);
+        }
+        break;
+      case 's':
+        CCNshowTree();
+        break;
+      case 'o':
+        global.output_file = optarg;
+        break;
+      case 'h':
+        Usage(argv[0]);
+        exit(EXIT_SUCCESS);
+      case '?':
+        Usage(argv[0]);
+        exit(EXIT_FAILURE);
+      }
+  }
+   if (optind == argc - 1) {
+        global.input_file = argv[optind];
+    } else {
+        Usage(argv[0]);
+        exit(EXIT_FAILURE);
     }
   return 0;
 }
-
-/* Our argp parser. */
-static struct argp argp = { options, parse_opt, args_doc, doc, 0, 0, 0};
 
 // What to do when a breakpoint is reached.
 void BreakpointHandler(node_st *root)
@@ -86,7 +91,7 @@ void BreakpointHandler(node_st *root)
 int main (int argc, char **argv)
 {
     GLBinitializeGlobals();
-    argp_parse (&argp, argc, argv, 0, 0, &global);
+    ProcessArgs(argc, argv);
 
     CCNrun(NULL);
     return 0;
