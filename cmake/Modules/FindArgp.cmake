@@ -1,4 +1,7 @@
+file(GLOB _ARGP_OSX_ROOT_HINT "/opt/homebrew/Cellar/argp-standalone/*")
+
 set(_ARGP_ROOT_HINTS
+    "${_ARGP_OSX_ROOT_HINT}"
 )
 
 set(_ARGP_ROOT_PATHS
