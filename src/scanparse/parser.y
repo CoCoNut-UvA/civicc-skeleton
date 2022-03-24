@@ -77,7 +77,7 @@ assign: varlet LET expr SEMICOLON
 
 varlet: ID
         {
-          $$ = ASTvarlet(STRcpy($1));
+          $$ = ASTvarlet($1);
           AddLocToNode($$, &@1, &@1);
         }
         ;
@@ -89,7 +89,7 @@ expr: constant
       }
     | ID
       {
-        $$ = ASTvar(STRcpy($1));
+        $$ = ASTvar($1);
       }
     | BRACKET_L expr[left] binop[type] expr[right] BRACKET_R
       {
