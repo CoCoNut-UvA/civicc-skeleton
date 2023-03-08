@@ -22,9 +22,7 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 %}
 
 %union {
- char               *id;
- int                 cint;
- float               cflt;
+ char               *value;
  enum binop_type     cbinop;
  node_st             *node;
 }
@@ -35,9 +33,7 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 %token MINUS PLUS STAR SLASH PERCENT LE LT GE GT EQ NE OR AND
 %token TRUEVAL FALSEVAL LET
 
-%token <cint> NUM
-%token <cflt> FLOAT
-%token <id> ID
+%token <value> NUM FLOAT ID
 
 %type <node> intval floatval boolval constant expr
 %type <node> stmts stmt assign varlet program
@@ -77,7 +73,7 @@ assign: varlet LET expr SEMICOLON
 
 varlet: ID
         {
-          $$ = ASTvarlet($1);
+          $$ = ASTvarlet(STRcpy($1));
           AddLocToNode($$, &@1, &@1);
         }
         ;
@@ -89,7 +85,7 @@ expr: constant
       }
     | ID
       {
-        $$ = ASTvar($1);
+        $$ = ASTvar(STRcpy($1));
       }
     | BRACKET_L expr[left] binop[type] expr[right] BRACKET_R
       {
@@ -114,13 +110,13 @@ constant: floatval
 
 floatval: FLOAT
            {
-             $$ = ASTfloat($1);
+             $$ = ASTfloat(atof($1));
            }
          ;
 
 intval: NUM
         {
-          $$ = ASTnum($1);
+          $$ = ASTnum(atoi($1));
         }
       ;
 
