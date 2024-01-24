@@ -1,0 +1,20 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/src",
+                "${workspaceFolder}/src/**",
+                "${workspaceFolder}/coconut/copra",
+                "${workspaceFolder}/coconut/palm/include",
+                "${workspaceFolder}/build-debug/ccngen"
+            ],
+            "defines": ["CCN_USES_UNSAFE=1"],
+            "compilerPath": "/bin/gcc",
+            "cStandard": "c17",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "linux-gcc-x64"
+        }
+    ],
+    "version": 4
+}

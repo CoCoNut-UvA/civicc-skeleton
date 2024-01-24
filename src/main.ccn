@@ -1,6 +1,6 @@
 start phase EntryPoint {
     info = "Denotes the entry point of your compiler",
-    
+
     actions {
         pass SPdoScanParse;
         Demo;
@@ -13,7 +13,7 @@ traversal Print {
 };
 
 phase Demo {
-    actions { 
+    actions {
         traversal RenameIdentifiers {
             uid = RI,
             nodes = { Var, VarLet }
@@ -77,25 +77,32 @@ node Binop {
         Expr left  { constructor, mandatory },
         Expr right { constructor, mandatory }
     },
-    
+
     attributes {
         binop_type type { constructor }
+    }
+};
+
+nodeset Vars {
+    nodes = {VarLet, Var},
+
+    attributes {
+        string name,
+        Link decl
     }
 };
 
 // Variable in assignment.
 node VarLet {
     attributes {
-        string name { constructor },
-        Link decl
+        string name { constructor }  // Repeat from nodeset to add constructor
     }
 };
 
 // Variable in an expression.
 node Var {
     attributes {
-        string name { constructor },
-        Link decl
+        string name { constructor }
     }
 };
 
@@ -123,6 +130,3 @@ node Ste {
 
 }
 */
-
-
-
