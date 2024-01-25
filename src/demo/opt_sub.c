@@ -21,7 +21,7 @@ node_st *OSbinop(node_st *node)
     TRAVleft(node);
     TRAVright(node);
 
-    if (BINOP_TYPE(node) == BO_sub) {
+    if (BINOP_OP(node) == BO_sub) {
         if ((NODE_TYPE(BINOP_LEFT(node)) == NT_VAR) &&
             (NODE_TYPE(BINOP_RIGHT(node)) == NT_VAR) &&
             STReq(VAR_NAME(BINOP_LEFT(node)), VAR_NAME(BINOP_RIGHT(node)))) {

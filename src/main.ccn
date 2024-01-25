@@ -1,10 +1,10 @@
-start phase EntryPoint {
+start phase RootPhase {
     info = "Denotes the entry point of your compiler",
 
     actions {
         pass SPdoScanParse;
         Demo;
-        Print;
+        print;
     }
 };
 
@@ -34,17 +34,16 @@ phase Demo {
     }
 };
 
-
 /*** AST ***/
 
-enum monop_type {
+enum MonOpType {
     prefix = MO,
     values {
         not, neg
     }
 };
 
-enum binop_type {
+enum BinOpType {
     prefix = BO,
     values {
         add, sub, mul, div, mod, lt, le, gt, ge, eq, ne,
@@ -58,7 +57,13 @@ nodeset Stmt = {Assign};
 // Nodes you want to be able to link to from your symbol table.
 nodeset Link = Expr | Stmt;
 
-root node Stmts {
+root node Program {
+    children {
+        Stmts stmts { constructor, mandatory }
+    }
+};
+
+node Stmts {
     children {
         Stmt stmt { constructor, mandatory },
         Stmts next { constructor }
@@ -74,12 +79,12 @@ node Assign {
 
 node Binop {
     children {
-        Expr left  { constructor, mandatory },
+        Expr left { constructor, mandatory },
         Expr right { constructor, mandatory }
     },
 
     attributes {
-        binop_type type { constructor }
+        BinOpType op { constructor }
     }
 };
 
@@ -92,14 +97,12 @@ nodeset Vars {
     }
 };
 
-// Variable in assignment.
 node VarLet {
     attributes {
         string name { constructor }  // Repeat from nodeset to add constructor
     }
 };
 
-// Variable in an expression.
 node Var {
     attributes {
         string name { constructor }
@@ -123,10 +126,3 @@ node Bool {
         bool val { constructor }
     }
 };
-
-/* Symbol table entry
- * TODO: fill in.
-node Ste {
-
-}
-*/
