@@ -18,6 +18,9 @@ add_test(NAME "arrays" COMMAND "${TEST_COMMAND}/run.bash" "${COMPILER}" arrays W
 
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    find_package(ARGP REQUIRED)
+endif()
 
 bison_target(CivicParser src/scanparse/parser.y "${CMAKE_CURRENT_BINARY_DIR}/parser.c"
     DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/parser.h" VERBOSE)
@@ -50,6 +53,15 @@ if(NOT DISABLE_ASAN)
 
     target_link_options(civicc PRIVATE
         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:$<$<CONFIG:Debug>:-fsanitize=address>>
+    )
+endif()
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    target_include_directories(civicc
+        PRIVATE "${ARGP_INCLUDE_DIR}"
+    )
+    target_link_libraries(civicc
+        PRIVATE "${ARGP_LIBRARIES}"
     )
 endif()
 
