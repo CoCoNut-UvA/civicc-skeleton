@@ -7,6 +7,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
 set(TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/test")
 set(COMPILER "${CMAKE_CURRENT_BINARY_DIR}/civicc")
 
+option(DISABLE_ASAN "Disable address sanitizer")
+
 # These will only work after you received the testing framework from us.
 enable_testing()
 add_test(NAME "basic" COMMAND "${TEST_COMMAND}/run.bash" "${COMPILER}" basic WORKING_DIRECTORY "${TEST_DIR}")
@@ -16,6 +18,9 @@ add_test(NAME "arrays" COMMAND "${TEST_COMMAND}/run.bash" "${COMPILER}" arrays W
 
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    find_package(ARGP REQUIRED)
+endif()
 
 bison_target(CivicParser src/scanparse/parser.y "${CMAKE_CURRENT_BINARY_DIR}/parser.c"
     DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/parser.h" VERBOSE)
@@ -37,15 +42,35 @@ add_executable(civicc ${FLEX_CivicLexer_OUTPUTS} ${BISON_CivicParser_OUTPUTS}
 )
 
 target_compile_options(civicc PRIVATE
-        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Wno-unused-function>
+    $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:-Wall -Wextra -pedantic -Wno-unused-function>
 )
+
+# Enable address sanitizer
+if(NOT DISABLE_ASAN)
+    target_compile_options(civicc PRIVATE
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:$<$<CONFIG:Debug>:-fsanitize=address>>
+    )
+
+    target_link_options(civicc PRIVATE
+        $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:$<$<CONFIG:Debug>:-fsanitize=address>>
+    )
+endif()
+
+if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+    target_include_directories(civicc
+        PRIVATE "${ARGP_INCLUDE_DIR}"
+    )
+    target_link_libraries(civicc
+        PRIVATE "${ARGP_LIBRARIES}"
+    )
+endif()
 
 coconut_target_generate(civicc "${CMAKE_CURRENT_LIST_DIR}/src/main.ccn" dynamic)
-target_include_directories(civicc 
-    PUBLIC "${CMAKE_CURRENT_LIST_DIR}/src" 
+target_include_directories(civicc
+    PUBLIC "${CMAKE_CURRENT_LIST_DIR}/src"
 )
 
-add_custom_target(dot 
+add_custom_target(dot
     dot -Tpng ccngen/ast.dot > ast.png
     COMMENT "Generate a png of your ast based on the generated dot diagram."
 )

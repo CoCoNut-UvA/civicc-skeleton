@@ -13,6 +13,15 @@
 #include "palm/dbug.h"
 
 /**
+ * @fn PRTprogram
+ */
+node_st *PRTprogram(node_st *node)
+{
+    TRAVstmts(node);
+    return node;
+}
+
+/**
  * @fn PRTstmts
  */
 node_st *PRTstmts(node_st *node)
@@ -32,10 +41,10 @@ node_st *PRTassign(node_st *node)
         TRAVlet(node);
         printf( " = ");
     }
-    
+
     TRAVexpr(node);
     printf( ";\n");
-  
+
 
     return node;
 }
@@ -50,7 +59,7 @@ node_st *PRTbinop(node_st *node)
 
     TRAVleft(node);
 
-    switch (BINOP_TYPE(node)) {
+    switch (BINOP_OP(node)) {
     case BO_add:
       tmp = "+";
       break;
@@ -95,7 +104,7 @@ node_st *PRTbinop(node_st *node)
     }
 
     printf( " %s ", tmp);
-    
+
     TRAVright(node);
 
     printf( ")(%d:%d-%d)", NODE_BLINE(node), NODE_BCOL(node), NODE_ECOL(node));
@@ -148,4 +157,3 @@ node_st *PRTbool(node_st *node)
     printf("%s", bool_str);
     return node;
 }
-

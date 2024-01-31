@@ -14,7 +14,7 @@
 
 static node_st *parseresult = NULL;
 extern int yylex();
-static int yyerror( char *errname);
+int yyerror(char *errname);
 extern FILE *yyin;
 void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 
@@ -25,7 +25,7 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
  char               *id;
  int                 cint;
  float               cflt;
- enum binop_type     cbinop;
+ enum BinOpType     cbinop;
  node_st             *node;
 }
 
@@ -49,7 +49,7 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 
 program: stmts
          {
-           parseresult = $1;
+           parseresult = ASTprogram($1);
          }
          ;
 
@@ -161,12 +161,12 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc)
     NODE_ECOL(node) = loc_e->last_column;
 }
 
-static int yyerror( char *error)
+int yyerror(char *error)
 {
   CTI(CTI_ERROR, true, "line %d, col %d\nError parsing source code: %s\n",
             global.line, global.col, error);
   CTIabortOnError();
-  return( 0);
+  return 0;
 }
 
 node_st *SPdoScanParse(node_st *root)

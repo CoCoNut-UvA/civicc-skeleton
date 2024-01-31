@@ -1,11 +1,16 @@
 #!/usr/bin/env sh
 
 echo "Checking prerequisites"
-which cmake > /dev/null || { echo "Could not find cmake on path"; exit 1; }
+which cmake > /dev/null || { echo "Could not find cmake in path"; exit 1; }
 echo "--------------------------------------------------"
 echo "Downloading coconut"
 echo "--------------------------------------------------"
-git submodule update --init || exit 1
+if [ ! -f coconut/Makefile ]; then
+    git submodule update --init || exit 1
+    (cd coconut && git checkout master) || exit 1
+else
+    (cd coconut && git pull) || exit 1
+fi
 echo "--------------------------------------------------"
 echo "Building coconut"
 echo "--------------------------------------------------"

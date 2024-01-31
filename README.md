@@ -1,13 +1,13 @@
 # CoCo
 
 This gives a base for your own civicc compiler.
-Clone this repo: 
+Clone this repo:
 ```bash
 git clone git@github.com:CoCoNut-UvA/civicc-skeleton.git civicc
 cd civicc
 ./configure.sh
 ```
-If everything went correctly, a build-debug directory is created. 
+If everything went correctly, a build-debug directory is created.
 Run
 ```bash
 make -C build-debug
@@ -25,3 +25,15 @@ make dist
 this gets everything in your git repo and combines it with the used coconut version in one archive.
 This should contain everything needed to hand in your assignments.
 **NOTE** Always check the resulting archive if it contains everything and builds correctly.
+
+# macOS dependencies
+The following build dependencies are required:
+```bash
+brew install cmake coreutils binutils bison argp-standalone
+```
+
+You might also need to run the following for cmake to find Bison:
+```bash
+echo "export PATH=\"$(brew --prefix)/opt/bison/bin:\$PATH\"" >> ~/.zshrc]
+source ~/.zshrc
+```

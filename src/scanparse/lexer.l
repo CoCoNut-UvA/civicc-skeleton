@@ -11,6 +11,8 @@
 #include "global/globals.h"
 #include "palm/ctinfo.h"
 
+// Use for error messages, see parser.y
+extern int yyerror(char *errname);
 
 #define FILTER(token) \
   global.col += yyleng;  \
@@ -44,12 +46,12 @@ int yycolumn = 1;
 
 "-"                        { FILTER( MINUS); }
 "+"                        { FILTER( PLUS);  }
-"*"                        { FILTER( STAR);  } 
-"/"                        { FILTER( SLASH);  } 
-"%"                        { FILTER( PERCENT);  } 
+"*"                        { FILTER( STAR);  }
+"/"                        { FILTER( SLASH);  }
+"%"                        { FILTER( PERCENT);  }
 
 "<="                       { FILTER( LE);    }
-"<"                        { FILTER( LT);    } 
+"<"                        { FILTER( LT);    }
 ">="                       { FILTER( GE);    }
 ">"                        { FILTER( GT);    }
 "=="                       { FILTER( EQ);    }
@@ -70,7 +72,7 @@ int yycolumn = 1;
                              FILTER( NUM);
                            }
 
-\n.*                       { 
+\n.*                       {
                              yycolumn = 1;
                              global.line += 1;
                              global.col = 0;
@@ -78,7 +80,7 @@ int yycolumn = 1;
                            }
 
 [ \t]                      { global.col += yyleng;
-                           } 
+                           }
 %%
 
 static inline void token_action() {
@@ -87,4 +89,3 @@ static inline void token_action() {
     yylloc.last_column = yycolumn + yyleng - 1;
     yycolumn += yyleng;
 }
-
