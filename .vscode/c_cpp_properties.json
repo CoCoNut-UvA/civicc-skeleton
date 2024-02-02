@@ -1,10 +1,9 @@
 {
     "configurations": [
         {
-            "name": "Linux",
+            "name": "CoCoNut-Linux",
             "includePath": [
                 "${workspaceFolder}/src",
-                "${workspaceFolder}/src/**",
                 "${workspaceFolder}/coconut/copra",
                 "${workspaceFolder}/coconut/palm/include",
                 "${workspaceFolder}/build-debug/ccngen"
