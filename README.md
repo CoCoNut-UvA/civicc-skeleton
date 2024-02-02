@@ -29,11 +29,11 @@ This should contain everything needed to hand in your assignments.
 # macOS dependencies
 The following build dependencies are required:
 ```bash
-brew install cmake coreutils binutils bison argp-standalone
+brew install cmake coreutils binutils bison
 ```
 
 You might also need to run the following for cmake to find Bison:
 ```bash
-echo "export PATH=\"$(brew --prefix)/opt/bison/bin:\$PATH\"" >> ~/.zshrc]
+echo "export PATH=\"$(brew --prefix)/opt/bison/bin:\$PATH\"" >> ~/.zshrc
 source ~/.zshrc
 ```

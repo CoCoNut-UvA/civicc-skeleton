@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.13)
 
 project(civicc VERSION 1.0 LANGUAGES C)
 
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules")
-
 set(TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/test")
 set(COMPILER "${CMAKE_CURRENT_BINARY_DIR}/civicc")
 
@@ -18,9 +16,6 @@ add_test(NAME "arrays" COMMAND "${TEST_COMMAND}/run.bash" "${COMPILER}" arrays W
 
 find_package(BISON REQUIRED)
 find_package(FLEX REQUIRED)
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    find_package(ARGP REQUIRED)
-endif()
 
 bison_target(CivicParser src/scanparse/parser.y "${CMAKE_CURRENT_BINARY_DIR}/parser.c"
     DEFINES_FILE "${CMAKE_CURRENT_BINARY_DIR}/parser.h" VERBOSE)
@@ -53,15 +48,6 @@ if(NOT DISABLE_ASAN)
 
     target_link_options(civicc PRIVATE
         $<$<NOT:$<CXX_COMPILER_ID:MSVC>>:$<$<CONFIG:Debug>:-fsanitize=address>>
-    )
-endif()
-
-if(${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
-    target_include_directories(civicc
-        PRIVATE "${ARGP_INCLUDE_DIR}"
-    )
-    target_link_libraries(civicc
-        PRIVATE "${ARGP_LIBRARIES}"
     )
 endif()
 
