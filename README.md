@@ -49,5 +49,6 @@ brew install cmake coreutils binutils bison
 You might also need to run the following for cmake to find Bison:
 ```bash
 echo "export PATH=\"$(brew --prefix)/opt/bison/bin:\$PATH\"" >> ~/.zshrc
-source ~/.zshrc
 ```
+
+**Note:** Make sure to fully restart your terminal after adding this line to `.zshrc`, and also delete the folder `coconut/build` if it exists. Otherwise cmake will keep using the old unsupported Bison version that macOS ships with.
