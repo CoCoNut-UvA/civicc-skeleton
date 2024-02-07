@@ -1,7 +1,15 @@
-# CoCo
-
+# CiviC Skeleton
 This gives a base for your own civicc compiler.
-Clone this repo:
+
+## Getting started
+First make sure you have all dependencies installed. The full dependencies of CoCoNut are listed on the main [GitHub](https://github.com/CoCoNut-UvA/coconut) repository. On
+Ubuntu these can be installed using:
+```bash
+sudo apt update && sudo apt install build-essential cmake bison flex graphviz
+```
+For macOS, see [macOS dependencies](#macos-dependencies).
+
+Now clone this repo:
 ```bash
 git clone git@github.com:CoCoNut-UvA/civicc-skeleton.git civicc
 cd civicc
