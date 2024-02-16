@@ -43,7 +43,7 @@ This should contain everything needed to hand in your assignments.
 ## macOS dependencies
 The following build dependencies are required on macOS:
 ```bash
-brew install cmake coreutils binutils bison
+brew install cmake coreutils binutils bison graphviz
 ```
 
 You might also need to run the following for cmake to find Bison:
