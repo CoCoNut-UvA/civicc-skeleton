@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Use gtar if it exists because macOS tar does not support --concatenate
+TAR="tar"
+if command -v gtar &> /dev/null; then
+    TAR="gtar"
+fi
+
 if ! [[ -z $(git status --porcelain) ]]; then
     echo "git status is not clean. Ensure it is before making an archive."
     echo "---------------------------------------------------------------"
@@ -15,7 +21,7 @@ cd ../
 echo "Archiving civicc..."
 git archive --prefix="civicc/" -o civicc.tar HEAD . || exit 1
 echo "Combining..."
-tar --concatenate --file=civicc.tar coconut/coconut.tar || exit 1
+$TAR --concatenate --file=civicc.tar coconut/coconut.tar || exit 1
 rm coconut/coconut.tar
 echo "Compressing..."
 gzip -9 civicc.tar

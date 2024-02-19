@@ -10,7 +10,8 @@ help:
 coconut:
 	make -C coconut
 
-# Change to @cmake -DDISABLE_ASAN=true ... to disable address sanitizer
+# Change to @cmake -DDISABLE_ASAN=true -DCMAKE_BUILD_TYPE=... to disable address
+# sanitizer
 debug: coconut
 	@cmake -DCMAKE_BUILD_TYPE=Debug -S ./ -B build-$@/
 

@@ -40,10 +40,22 @@ this gets everything in your git repo and combines it with the used coconut vers
 This should contain everything needed to hand in your assignments.
 **NOTE:** Always check the resulting archive if it contains everything and builds correctly.
 
+## Disabling the Address Sanitizer
+If you just want ASAN to not report memory leaks (although we do recommend that you actually fix the leaks), you can add the following to src/main.c:
+```c
+/* Do not detect memory leaks when using AddressSanitizer. */
+const char *__asan_default_options() {
+    return "detect_leaks=0";
+}
+```
+
+If you want to disable it entirely, edit the debug configuration in the [Makefile](./Makefile).
+You may need to remove the build-debug folder and rerun `./configure.sh`.
+
 ## macOS dependencies
 The following build dependencies are required on macOS:
 ```bash
-brew install cmake coreutils binutils bison graphviz
+brew install cmake coreutils binutils bison graphviz gnu-tar
 ```
 
 You might also need to run the following for cmake to find Bison:
