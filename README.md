@@ -1,9 +1,13 @@
-# CiviC Skeleton
-This gives a base for your own civicc compiler.
+# CiviC compiler skeleton
+This gives a base for your own CiviC compiler. In its current state it can:
+1. Read txt files containing simple assignment expressions consisting only of binary operations surrounded by brackets. (See the test directory for example files)
+2. Perform a couple of demo traversals on the statements.
+3. Print the AST to the terminal.
 
 ## Getting started
-First make sure you have all dependencies installed. The full dependencies of CoCoNut are listed on the main [GitHub](https://github.com/CoCoNut-UvA/coconut) repository. On
-Ubuntu these can be installed using:
+First make sure you have all dependencies installed.
+The full dependencies of CoCoNut are listed on the main [GitHub](https://github.com/CoCoNut-UvA/coconut) repository.
+On Ubuntu these can be installed using:
 ```bash
 sudo apt update && sudo apt install build-essential cmake bison flex graphviz
 ```
@@ -16,14 +20,28 @@ cd civicc
 ./configure.sh
 ```
 If everything went correctly, a build-debug directory is created.
-Run
+To build your compiler, run:
 ```bash
 make -C build-debug
 ```
-to build your compiler.
 
+To test the compiler, you can run `../build-debug/civicc test1.txt` in the test directory.
+
+### Creating a private git repository
 **IMPORTANT**: After cloning, you should change the remote to point to a **private** repo you control.
 You can **not** achieve this via forking, because GitHub does not allow changing the visibility of a forked repo.
+To do this follow these instructions:
+1. Create a private repository on GitHub [here](https://github.com/new).[^1]
+   Make sure to select **private**, and set *Add a README file* to **false**.
+   You should now have a repository link that looks something like: `git@github.com:username/my-awesome-compiler.git`.
+2. In the folder where you cloned the skeleton, run:
+   ```bash
+   git remote set-url origin git@github.com:username/my-awesome-compiler.git
+   git push --all
+   ```
+3. The private repository should now contain the skeleton code.
+
+[^1]: You can of course also use your preferred alternative such as [Gitlab](https://gitlab.com/projects/new#blank_project).
 
 ## VS Code support
 For syntax highlighting of the CoCoNut DSL files (e.g. the `main.ccn` file), you can install the [nutcracker](https://github.com/CoCoNut-UvA/nutcracker/) extension from the Visual Studio Marketplace [here](https://marketplace.visualstudio.com/items?itemName=CoCoNut-UvA.nutcracker).

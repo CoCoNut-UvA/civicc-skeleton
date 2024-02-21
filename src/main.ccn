@@ -54,9 +54,6 @@ enum BinOpType {
 nodeset Expr = {Num, Float, Bool, Binop, Var};
 nodeset Stmt = {Assign};
 
-// Nodes you want to be able to link to from your symbol table.
-nodeset Link = Expr | Stmt;
-
 root node Program {
     children {
         Stmts stmts { constructor, mandatory }
@@ -92,8 +89,7 @@ nodeset Vars {
     nodes = {VarLet, Var},
 
     attributes {
-        string name,
-        Link decl
+        string name
     }
 };
 
