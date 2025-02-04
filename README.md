@@ -11,7 +11,7 @@ For macOS, see [macOS dependencies](#macos-dependencies).
 
 Now clone this repo:
 ```bash
-git clone git@github.com:CoCoNut-UvA/civicc-skeleton.git civicc
+git clone https://github.com/CoCoNut-UvA/civicc-skeleton.git civicc
 cd civicc
 ./configure.sh
 ```
