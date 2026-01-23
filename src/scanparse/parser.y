@@ -49,47 +49,47 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 
 program: stmts
          {
-           parseresult = ASTprogram($1);
+           parseresult = ASTprogram($stmts);
          }
          ;
 
-stmts: stmt stmts
+stmts: stmt stmts[stmt_list]
         {
-          $$ = ASTstmts($1, $2);
+          $$ = ASTstmts($stmt, $stmt_list);
         }
       | stmt
         {
-          $$ = ASTstmts($1, NULL);
+          $$ = ASTstmts($stmt, NULL);
         }
         ;
 
 stmt: assign
        {
-         $$ = $1;
+         $$ = $assign;
        }
        ;
 
 assign: varlet LET expr SEMICOLON
         {
-          $$ = ASTassign($1, $3);
+          $$ = ASTassign($varlet, $expr);
         }
         ;
 
-varlet: ID
+varlet: ID[id]
         {
-          $$ = ASTvarlet($1);
-          AddLocToNode($$, &@1, &@1);
+          $$ = ASTvarlet($id);
+          AddLocToNode($$, &@id, &@id);
         }
         ;
 
 
 expr: constant
       {
-        $$ = $1;
+        $$ = $constant;
       }
-    | ID
+    | ID[id]
       {
-        $$ = ASTvar($1);
+        $$ = ASTvar($id);
       }
     | BRACKET_L expr[left] binop[type] expr[right] BRACKET_R
       {
@@ -100,27 +100,27 @@ expr: constant
 
 constant: floatval
           {
-            $$ = $1;
+            $$ = $floatval;
           }
         | intval
           {
-            $$ = $1;
+            $$ = $intval;
           }
         | boolval
           {
-            $$ = $1;
+            $$ = $boolval;
           }
         ;
 
-floatval: FLOAT
+floatval: FLOAT[val]
            {
-             $$ = ASTfloat($1);
+             $$ = ASTfloat($val);
            }
          ;
 
-intval: NUM
+intval: NUM[val]
         {
-          $$ = ASTnum($1);
+          $$ = ASTnum($val);
         }
       ;
 
