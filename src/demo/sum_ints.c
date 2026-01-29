@@ -3,8 +3,6 @@
  *
  * This file contains the code for the SumInstructions traversal.
  * The traversal has the uid: SI
- *
- *
  */
 
 #include <stdio.h>
@@ -16,20 +14,16 @@
 void SIinit() { return; }
 void SIfini() { return; }
 
-static bool first_stmts = false;
-
-
 /**
- * @fn SIstmts
+ * @fn SIprogram
  */
-node_st *SIstmts(node_st *node)
+node_st *SIprogram(node_st *node)
 {
     TRAVchildren(node);
-    if (!first_stmts) {
-        first_stmts = true;
-        struct data_si *data = DATA_SI_GET();
-        printf("Sum of integers: %d\n", data->sum);
-    }
+
+    struct data_si *data = DATA_SI_GET();
+    printf("Sum of integers: %d\n", data->sum);
+
     return node;
 }
 

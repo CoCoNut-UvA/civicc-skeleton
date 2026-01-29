@@ -21,7 +21,7 @@ phase Demo {
 
         traversal SumInts {
             uid = SI,
-            nodes = { Stmts, Num },
+            nodes = { Program, Num },
             travdata {
                 int sum
             }
