@@ -25,7 +25,6 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
  char               *id;
  int                 cint;
  float               cflt;
- enum BinOpType     cbinop;
  node_st             *node;
 }
 
@@ -41,7 +40,6 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 
 %type <node> intval floatval boolval constant expr
 %type <node> stmts stmt assign varlet program
-%type <cbinop> binop
 
 %start program
 
@@ -49,78 +47,133 @@ void AddLocToNode(node_st *node, void *begin_loc, void *end_loc);
 
 program: stmts
          {
-           parseresult = ASTprogram($1);
+           parseresult = ASTprogram($stmts);
          }
          ;
 
-stmts: stmt stmts
+stmts: stmt stmts[stmt_list]
         {
-          $$ = ASTstmts($1, $2);
+          $$ = ASTstmts($stmt, $stmt_list);
         }
       | stmt
         {
-          $$ = ASTstmts($1, NULL);
+          $$ = ASTstmts($stmt, NULL);
         }
         ;
 
 stmt: assign
        {
-         $$ = $1;
+         $$ = $assign;
        }
        ;
 
 assign: varlet LET expr SEMICOLON
         {
-          $$ = ASTassign($1, $3);
+          $$ = ASTassign($varlet, $expr);
         }
         ;
 
-varlet: ID
+varlet: ID[id]
         {
-          $$ = ASTvarlet($1);
-          AddLocToNode($$, &@1, &@1);
+          $$ = ASTvarlet($id);
+          AddLocToNode($$, &@id, &@id);
         }
         ;
 
 
 expr: constant
       {
-        $$ = $1;
+        $$ = $constant;
       }
-    | ID
+    | ID[id]
       {
-        $$ = ASTvar($1);
+        $$ = ASTvar($id);
       }
-    | BRACKET_L expr[left] binop[type] expr[right] BRACKET_R
+    | BRACKET_L expr[left] PLUS expr[right] BRACKET_R
       {
-        $$ = ASTbinop( $left, $right, $type);
+        $$ = ASTbinop( $left, $right, BO_add);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] MINUS expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_sub);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] STAR expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_mul);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] SLASH expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_div);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] PERCENT expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_mod);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] LE expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_le);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] LT expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_lt);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] GE expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_ge);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] GT expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_gt);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] EQ expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_eq);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] OR expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_or);
+        AddLocToNode($$, &@left, &@right);
+      }
+    | BRACKET_L expr[left] AND expr[right] BRACKET_R
+      {
+        $$ = ASTbinop( $left, $right, BO_and);
         AddLocToNode($$, &@left, &@right);
       }
     ;
 
 constant: floatval
           {
-            $$ = $1;
+            $$ = $floatval;
           }
         | intval
           {
-            $$ = $1;
+            $$ = $intval;
           }
         | boolval
           {
-            $$ = $1;
+            $$ = $boolval;
           }
         ;
 
-floatval: FLOAT
+floatval: FLOAT[val]
            {
-             $$ = ASTfloat($1);
+             $$ = ASTfloat($val);
            }
          ;
 
-intval: NUM
+intval: NUM[val]
         {
-          $$ = ASTnum($1);
+          $$ = ASTnum($val);
         }
       ;
 
@@ -133,20 +186,6 @@ boolval: TRUEVAL
            $$ = ASTbool(false);
          }
        ;
-
-binop: PLUS      { $$ = BO_add; }
-     | MINUS     { $$ = BO_sub; }
-     | STAR      { $$ = BO_mul; }
-     | SLASH     { $$ = BO_div; }
-     | PERCENT   { $$ = BO_mod; }
-     | LE        { $$ = BO_le; }
-     | LT        { $$ = BO_lt; }
-     | GE        { $$ = BO_ge; }
-     | GT        { $$ = BO_gt; }
-     | EQ        { $$ = BO_eq; }
-     | OR        { $$ = BO_or; }
-     | AND       { $$ = BO_and; }
-     ;
 
 %%
 
