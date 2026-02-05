@@ -64,3 +64,8 @@ echo "export PATH=\"$(brew --prefix)/opt/bison/bin:\$PATH\"" >> ~/.zshrc
 ```
 
 **Note:** Make sure to fully **restart your terminal** after adding this line to `.zshrc`, and also **delete the folder `coconut/build`** if it exists. Otherwise cmake will keep using the old unsupported Bison version that macOS ships with.
+
+## Updating CoCoNut
+CoCoNut is included as a git submodule. You can update CoCoNut to its latest version when needed and if preferred using
+`git submodule update --remote` and commiting this update in your own repository.
+See the documentation on [Git Submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) for more information.

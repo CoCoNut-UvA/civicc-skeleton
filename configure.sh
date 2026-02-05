@@ -5,12 +5,7 @@ which cmake > /dev/null || { echo "Could not find cmake in path"; exit 1; }
 echo "--------------------------------------------------"
 echo "Downloading coconut"
 echo "--------------------------------------------------"
-if [ ! -f coconut/Makefile ]; then
-    git submodule update --init || exit 1
-    (cd coconut && git checkout master) || exit 1
-else
-    (cd coconut && git pull) || exit 1
-fi
+git submodule update --init || exit 1
 echo "--------------------------------------------------"
 echo "Building coconut"
 echo "--------------------------------------------------"
