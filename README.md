@@ -55,7 +55,7 @@ You may need to remove the build-debug folder and rerun `./configure.sh`.
 ## macOS dependencies
 The following build dependencies are required on macOS:
 ```bash
-brew install cmake coreutils binutils bison graphviz gnu-tar
+rm -rf coconut/build && brew install cmake coreutils binutils bison graphviz gnu-tar
 ```
 
 You might also need to run the following for cmake to find Bison:
@@ -63,4 +63,4 @@ You might also need to run the following for cmake to find Bison:
 echo "export PATH=\"$(brew --prefix)/opt/bison/bin:\$PATH\"" >> ~/.zshrc
 ```
 
-**Note:** Make sure to fully restart your terminal after adding this line to `.zshrc`, and also delete the folder `coconut/build` if it exists. Otherwise cmake will keep using the old unsupported Bison version that macOS ships with.
+**Note:** Make sure to fully **restart your terminal** after adding this line to `.zshrc`, and also **delete the folder `coconut/build`** if it exists. Otherwise cmake will keep using the old unsupported Bison version that macOS ships with.
